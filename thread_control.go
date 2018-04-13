@@ -44,6 +44,18 @@ type RequestThreadControl struct {
 
 // PassThread send request to graph api with given data and return error
 func PassThread(targetAppID int64, recipient, metadata, accessToken string) error {
+	if targetAppID == 0 {
+		return errors.New("targetAppID is 0")
+	}
+
+	if recipient == "" {
+		return errors.New("recipient is empty")
+	}
+
+	if accessToken == "" {
+		return errors.New("accessToken is empty")
+	}
+
 	data := PassThreadControl{
 		TargetAppID: targetAppID,
 		Metadata:    metadata,
@@ -63,6 +75,14 @@ func PassThread(targetAppID int64, recipient, metadata, accessToken string) erro
 
 // TakeThread send request to graph api with given data and return error
 func TakeThread(recipient, metadata, accessToken string) error {
+	if recipient == "" {
+		return errors.New("recipient is empty")
+	}
+
+	if accessToken == "" {
+		return errors.New("accessToken is empty")
+	}
+
 	data := TakeThreadControl{
 		Metadata: metadata,
 	}
