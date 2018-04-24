@@ -31,3 +31,39 @@ Receipt:
 Template:
 
     Handles errors. Like character limit, button limit, bubble limit.
+
+Action:
+
+    Sender action sending. Mark seen, typing on, typing off.
+
+Error:
+
+    Defines error structure.
+
+Events:
+
+    ????
+
+Helper:
+
+    Creats http requests.
+
+Messagequery:
+
+    Defines content type. Can be test, location. Notification type can be regular, silent push, no push, response, update, message tag, non promotional subscrition.
+
+Messenger:
+
+    Defines message structure, handler types and debug types.
+
+Profile:
+
+    Defines profile struct.
+
+Settings:
+
+    Setting struct defined.
+
+Thread Control:
+
+    Handles threads. Requests, handlers.
