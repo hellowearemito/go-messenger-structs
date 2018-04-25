@@ -55,9 +55,9 @@ type MessagingType string
 
 // MessageQuery ...
 type MessageQuery struct {
-	Recipient        Recipient        `json:"recipient"`
-	Message          *SendMessage     `json:"message,omitempty"`
-	NotificationType NotificationType `json:"notification_type,omitempty"`
-	Action           SenderAction     `json:"sender_action,omitempty"`
-	MessagingType    MessagingType    `json:"messaging_type,omitempty"`
+	Recipient        Recipient        `json:"recipient" form:"recipient"`
+	Message          *SendMessage     `json:"message,omitempty" form:"message,omitempty"`
+	NotificationType NotificationType `json:"notification_type,omitempty" form:"notification_type,omitempty"`
+	Action           SenderAction     `json:"sender_action,omitempty" form:"sender_action,omitempty"`
+	MessagingType    MessagingType    `json:"messaging_type,omitempty" form:"messaging_type,omitempty"`
 }
