@@ -34,6 +34,7 @@ type Entry struct {
 	Postback             *Postback                     `json:"postback,omitempty"`
 	Optin                *Optin                        `json:"optin,empty"`
 	Read                 *Read                         `json:"read,omitempty"`
+	Referral             *Referral                     `json:"referral,omitempty"`
 	AppRoles             *AppRolesCallback             `json:"app_roles,omitempty"`
 	PassThreadControl    *PassThreadControlCallback    `json:"pass_thread_control,omitempty"`
 	TakeThreadControl    *TakeThreadControlCallback    `json:"take_thread_control,omitempty"`
@@ -99,6 +100,16 @@ type ReceivedMessage struct {
 // https://developers.facebook.com/docs/messenger-platform/webhook-reference/message
 type QuickReplyPayload struct {
 	Payload string
+}
+
+// Referral contains information specific to a referral callback.
+// https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_referrals
+type Referral struct {
+	AdID       string `json:"ad_id,omitempty"`
+	Ref        string `json:"ref,omitempty"`
+	RefererURI string `json:"referer_uri,omitempty"`
+	Source     string `json:"source,omitempty"`
+	Type       string `json:"type,omitempty"`
 }
 
 // Delivery contains information specific to a message delivered callback.
