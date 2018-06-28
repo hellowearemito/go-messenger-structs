@@ -1,5 +1,7 @@
 package template
 
+import messenger "messenger-go-structs"
+
 // ButtonType defines the behavior of the button in the ButtonTemplate
 type ButtonType string
 
@@ -9,14 +11,49 @@ const (
 	ButtonTypePhoneNumber   ButtonType = "phone_number"
 	ButtonTypeAccountLink   ButtonType = "account_link"
 	ButtonTypeAccountUnlink ButtonType = "account_unlink"
-	ButtinTypeElementShare  ButtonType = "element_share"
+	ButtonTypeElementShare  ButtonType = "element_share"
+	ButtonTypePayment       ButtonType = "payment"
+	ButtonTypeGamePlay      ButtonType = "game_play"
 )
 
 type Button struct {
-	Type    ButtonType `json:"type,omitempty"`
-	Title   string     `json:"title,omitempty"`
-	URL     string     `json:"url,omitempty"`
-	Payload string     `json:"payload,omitempty"`
+	Type           ButtonType      `json:"type,omitempty"`
+	Title          string          `json:"title,omitempty"`
+	URL            string          `json:"url,omitempty"`
+	Payload        string          `json:"payload,omitempty"`
+	ShareContents  *ShareContent   `json:"share_contents,omitempty"`
+	PaymentSummary *PaymentSummary `json:"payment_summary,omitempty"`
+	GameMetadata   *GameMetadata   `json:"game_metadata,omitempty"`
+}
+
+type ShareContent struct {
+	Attachment messenger.Attachment `json:"attachment"`
+}
+
+type PaymentSummary struct {
+	Currency        string          `json:"currency"`
+	PaymentType     string          `json:"payment_type"`
+	IsTestPayment   bool            `json:"is_test_payment"`
+	MerchantName    string          `json:"merchant_name"`
+	RequestUserInfo RequestUserInfo `json:"request_user_info"`
+	PriceList       []PaymentPrice  `json:"price_list"`
+}
+
+type RequestUserInfo struct {
+	ShippingAddress string `json:"shipping_address"`
+	ContactName     string `json:"contact_name"`
+	ContactPhone    string `json:"contact_phone"`
+	ContactEmail    string `json:"contact_email"`
+}
+
+type PaymentPrice struct {
+	Label  string `json:"label"`
+	Amount string `json:"amount"`
+}
+
+type GameMetadata struct {
+	PlayerID  string `json:"player_id"`
+	ContextID string `json:"context_id,omitempty"`
 }
 
 // NewWebURLButton creates a button used in ButtonTemplate that redirects user to external address upon clicking the URL
@@ -60,5 +97,35 @@ func NewAccountLinkButton(url string) Button {
 func NewAccountUnlinkButton() Button {
 	return Button{
 		Type: ButtonTypeAccountUnlink,
+	}
+}
+
+// NewSharedButton creates a new shared button.
+func NewSharedButton(attachment messenger.Attachment) Button {
+	return Button{
+		Type: ButtonTypeElementShare,
+		ShareContents: &ShareContent{
+			Attachment: attachment,
+		},
+	}
+}
+
+// NewPaymentButton creates a payment button.
+func NewPaymentButton(title, payload string, paymentSummary *PaymentSummary) Button {
+	return Button{
+		Type:           ButtonTypePayment,
+		Title:          title,
+		Payload:        payload,
+		PaymentSummary: paymentSummary,
+	}
+}
+
+// NewGamePlayButton creates game play button.
+func NewGamePlayButton(title, payload string, gameMetadata *GameMetadata) Button {
+	return Button{
+		Type:         ButtonTypeGamePlay,
+		Title:        title,
+		Payload:      payload,
+		GameMetadata: gameMetadata,
 	}
 }
