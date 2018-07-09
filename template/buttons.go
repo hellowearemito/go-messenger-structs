@@ -1,6 +1,8 @@
 package template
 
-import messenger "messenger-go-structs"
+import (
+	messenger "github.com/hellowearemito/go-messenger-structs"
+)
 
 // ButtonType defines the behavior of the button in the ButtonTemplate
 type ButtonType string
