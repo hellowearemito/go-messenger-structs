@@ -39,6 +39,7 @@ type Entry struct {
 	PassThreadControl    *PassThreadControlCallback    `json:"pass_thread_control,omitempty"`
 	TakeThreadControl    *TakeThreadControlCallback    `json:"take_thread_control,omitempty"`
 	RequestThreadControl *RequestThreadControlCallback `json:"request_thread_control,omitempty"`
+	NLP                  *NLP                          `json:"nlp,omitempty"`
 }
 
 // MessageEvent encapsulates common info plus the specific type of callback
@@ -144,4 +145,17 @@ type Read struct {
 type MessageEcho struct {
 	ReceivedMessage
 	AppID int64 `json:"app_id,omitempty"`
+}
+
+// NLP contains the nlp rules.
+// https://developers.facebook.com/docs/messenger-platform/built-in-nlp#handling_entities
+type NLP struct {
+	Entries map[string][]NLPEntry `json:"entries"`
+}
+
+// NLPEntry represents the basic nlp entry.
+// https://developers.facebook.com/docs/messenger-platform/built-in-nlp#handling_entities
+type NLPEntry struct {
+	Confidence float64 `json:"confidence"`
+	Value      string  `json:"value"`
 }
