@@ -11,7 +11,7 @@ const (
 
 type ListTemplate struct {
 	TopElementStyle string        `json:"top_element_style"`
-	Elements        []ListElement `json:"elements"`
+	Elements        []Element `json:"elements"`
 	Buttons         []Button      `json:"buttons,omitempty"`
 }
 
@@ -23,14 +23,6 @@ func (ListTemplate) SupportsButtons() bool {
 	return true
 }
 
-type ListElement struct {
-	Title         string        `json:"title"`
-	ImageURL      string        `json:"image_url,omitempty"`
-	Subtitle      string        `json:"subtitle,omitempty"`
-	DefaultAction DefaultAction `json:"default_action,omitempty"`
-	Buttons       []Button  `json:"buttons,omitempty"`
-}
-
 func (l *ListTemplate) Decode(d json.RawMessage) error {
 	t := ListTemplate{}
 	err := json.Unmarshal(d, &t)
@@ -40,6 +32,6 @@ func (l *ListTemplate) Decode(d json.RawMessage) error {
 	return err
 }
 
-func (l *ListTemplate) AddElement(e ...ListElement) {
+func (l *ListTemplate) AddElement(e ...Element) {
 	l.Elements = append(l.Elements, e...)
 }
