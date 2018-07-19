@@ -1,5 +1,7 @@
 package template
 
+import "encoding/json"
+
 const (
 	TemplateTypeList TemplateType = "list"
 
@@ -10,7 +12,7 @@ const (
 type ListTemplate struct {
 	TopElementStyle string        `json:"top_element_style"`
 	Elements        []ListElement `json:"elements"`
-	Buttons         []Button      `json:"buttons,omitempty"`
+	Buttons         []ListButton  `json:"buttons,omitempty"`
 }
 
 func (ListTemplate) Type() TemplateType {
@@ -36,4 +38,13 @@ type ListButton struct {
 	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
 	WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
 	FallbackURL         string `json:"fallback_url,omitempty"`
+}
+
+func (l *ListTemplate) Decode(d json.RawMessage) error {
+	t := ListTemplate{}
+	err := json.Unmarshal(d, &t)
+	if err == nil {
+		l.Elements = t.Elements
+	}
+	return err
 }
