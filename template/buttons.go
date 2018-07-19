@@ -103,12 +103,18 @@ func NewAccountUnlinkButton() Button {
 }
 
 // NewSharedButton creates a new shared button.
-func NewSharedButton(attachment messenger.Attachment) Button {
+func NewSharedButton(attachment *messenger.Attachment) Button {
+	if attachment != nil {
+		return Button{
+			Type: ButtonTypeElementShare,
+			ShareContents: &ShareContent{
+				Attachment: *attachment,
+			},
+		}
+	}
+
 	return Button{
 		Type: ButtonTypeElementShare,
-		ShareContents: &ShareContent{
-			Attachment: attachment,
-		},
 	}
 }
 
