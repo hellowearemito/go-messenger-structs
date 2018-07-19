@@ -48,3 +48,7 @@ func (l *ListTemplate) Decode(d json.RawMessage) error {
 	}
 	return err
 }
+
+func (l *ListTemplate) AddElement(e ...ListElement) {
+	l.Elements = append(l.Elements, e...)
+}
