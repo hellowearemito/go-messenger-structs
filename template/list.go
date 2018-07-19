@@ -28,7 +28,7 @@ type ListElement struct {
 	ImageURL      string        `json:"image_url,omitempty"`
 	Subtitle      string        `json:"subtitle,omitempty"`
 	DefaultAction DefaultAction `json:"default_action,omitempty"`
-	Buttons       []ListButton  `json:"buttons,omitempty"`
+	Buttons       []Button  `json:"buttons,omitempty"`
 }
 
 func (l *ListTemplate) Decode(d json.RawMessage) error {
