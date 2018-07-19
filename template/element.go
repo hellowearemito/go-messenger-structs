@@ -5,7 +5,7 @@ type Element struct {
 	Url           string        `json:"item_url,omitempty"`
 	ImageUrl      string        `json:"image_url,omitempty"`
 	Subtitle      string        `json:"subtitle,omitempty"`
-	DefaultAction DefaultAction `json:"default_action,omitempty"`
+	DefaultAction *DefaultAction `json:"default_action,omitempty"`
 	Buttons       []Button      `json:"buttons,omitempty"`
 }
 
