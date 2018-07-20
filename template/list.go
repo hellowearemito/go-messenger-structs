@@ -10,9 +10,10 @@ const (
 )
 
 type ListTemplate struct {
-	TopElementStyle string        `json:"top_element_style"`
+	TemplateBase
+	TopElementStyle string    `json:"top_element_style"`
 	Elements        []Element `json:"elements"`
-	Buttons         []Button      `json:"buttons,omitempty"`
+	Buttons         []Button  `json:"buttons,omitempty"`
 }
 
 func (ListTemplate) Type() TemplateType {
