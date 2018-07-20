@@ -11,7 +11,7 @@ const (
 
 type ListTemplate struct {
 	TemplateBase
-	TopElementStyle *string    `json:"top_element_style"`
+	TopElementStyle *string   `json:"top_element_style"`
 	Elements        []Element `json:"elements"`
 	Buttons         []Button  `json:"buttons,omitempty"`
 }
@@ -35,4 +35,8 @@ func (l *ListTemplate) Decode(d json.RawMessage) error {
 
 func (l *ListTemplate) AddElement(e ...Element) {
 	l.Elements = append(l.Elements, e...)
+}
+
+func (l *ListTemplate) AddButton(b ...Button) {
+	l.Buttons = append(l.Buttons, b...)
 }
