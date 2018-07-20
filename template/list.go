@@ -11,7 +11,7 @@ const (
 
 type ListTemplate struct {
 	TemplateBase
-	TopElementStyle string    `json:"top_element_style"`
+	TopElementStyle *string    `json:"top_element_style"`
 	Elements        []Element `json:"elements"`
 	Buttons         []Button  `json:"buttons,omitempty"`
 }
