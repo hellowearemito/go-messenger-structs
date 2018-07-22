@@ -27,10 +27,3 @@ type TemplateBase struct {
 	Type TemplateType `json:"template_type"`
 }
 
-type DefaultAction struct {
-	Type                string `json:"type"`
-	URL                 string `json:"url,omitempty"`
-	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
-	WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
-	FallbackURL         string `json:"fallback_url,omitempty"`
-}

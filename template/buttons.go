@@ -26,6 +26,10 @@ type Button struct {
 	ShareContents  *ShareContent   `json:"share_contents,omitempty"`
 	PaymentSummary *PaymentSummary `json:"payment_summary,omitempty"`
 	GameMetadata   *GameMetadata   `json:"game_metadata,omitempty"`
+	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
+	WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
+	FallbackURL         string `json:"fallback_url,omitempty"`
+
 }
 
 type ShareContent struct {
