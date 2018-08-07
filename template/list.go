@@ -2,11 +2,15 @@ package template
 
 import "encoding/json"
 
+// Type
 const (
 	TemplateTypeList TemplateType = "list"
+)
 
-	TopElementStyleLarge   = "LARGE"
-	TopElementStyleCompact = "COMPACT"
+// style variants, not const because we want to use it as pointer...
+var (
+	TopElementStyleLarge   = "large"
+	TopElementStyleCompact = "compact"
 )
 
 type ListTemplate struct {
