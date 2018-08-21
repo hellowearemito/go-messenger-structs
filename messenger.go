@@ -12,7 +12,7 @@ const (
 // GraphAPI specifies host used for API requests
 var (
 	GraphAPI        = "https://graph.facebook.com"
-	GraphAPIVersion = "v2.12"
+	GraphAPIVersion = "v3.1"
 )
 
 type (
