@@ -20,6 +20,8 @@ type Controller interface {
 	PassThread(ctx context.Context, targetAppID int64, recipient, metadata, accessToken string) error
 	TakeThread(ctx context.Context, recipient, metadata, accessToken string) error
 	GetProfile(userID string, accessToken string, url string, fields ...Field) (Profile, error)
+	UpdatePageSettings(accessToken string, payload json.RawMessage) error
+	DeletePageSettings(accessToken string, payload json.RawMessage) error
 }
 
 // controller is the struct holding all functionalities belongs to these structs
@@ -143,6 +145,43 @@ func (c *controller) GetProfile(userID string, accessToken string, url string, f
 
 	err = json.Unmarshal(read, &profile)
 	return profile, err
+}
+
+// DeletePageSettings deletes the messenger page's settings.
+func (c *controller) DeletePageSettings(accessToken string, payload json.RawMessage) error {
+	return c.doUpdateSettingsRequest(http.MethodDelete, accessToken, payload)
+}
+
+// UpdatePageSettings updates the messenger page's settings.
+func (c *controller) UpdatePageSettings(accessToken string, payload json.RawMessage) error {
+	return c.doUpdateSettingsRequest(http.MethodPost, accessToken, payload)
+}
+
+// doUpdateSettings sends the update request to facebook.
+func (c *controller) doUpdateSettingsRequest(method string, accessToken string, payload json.RawMessage) error {
+	url := fmt.Sprintf("%s/%s/%s?access_token=%s", GraphAPI, c.graphAPIVersion, MessengerSettingsPath, accessToken)
+
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return errors.Wrap(err, "doUpdateSettingsRequest: marshal error")
+	}
+	reader := bytes.NewReader(b)
+	resp, err := c.doRequest(method, url, reader)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return errors.Wrap(err, "doUpdateSettingsRequest: ioutil.ReadAll fail")
+	}
+
+	return errors.New("doUpdateSettingsRequest response.StatusCode != http.StatusOK: " + string(body))
 }
 
 func (c *controller) doRequest(method string, url string, body io.Reader) (*http.Response, error) {

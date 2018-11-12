@@ -11,6 +11,7 @@ const (
 	CTATypePostback           = "postback"
 	CTATypeURL                = "web_url"
 	CTATypeNested             = "nested"
+	MessengerSettingsPath     = "me/messenger_profile"
 )
 
 // Settings is the implementation of https://developers.facebook.com/docs/messenger-platform/reference/messenger-profile-api
