@@ -124,7 +124,8 @@ type Delivery struct {
 // Postback contains content specific to a postback.
 // https://developers.facebook.com/docs/messenger-platform/webhook-reference/message
 type Postback struct {
-	Payload string `json:"payload"`
+	Payload  string    `json:"payload"`
+	Referral *Referral `json:"referral,omitempty"`
 }
 
 // Optin contains information specific to Opt-In callbacks.
