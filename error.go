@@ -8,11 +8,11 @@ type rawError struct {
 
 // Error ...
 type Error struct {
-	Message   string `json:"message"`
-	Type      string `json:"type"`
-	Code      int    `json:"code"`
-	ErrorData string `json:"error_data"`
-	TraceID   string `json:"fbtrace_id"`
+	Message      string `json:"message"`
+	Type         string `json:"type"`
+	Code         int    `json:"code"`
+	ErrorSubcode int    `json:"error_subcode"`
+	TraceID      string `json:"fbtrace_id"`
 }
 
 // Error ...
