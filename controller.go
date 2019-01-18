@@ -134,7 +134,7 @@ func (c *controller) GetProfile(userID string, accessToken string, url string, f
 		return profile, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		er := rawError{}
+		er := RawError{}
 		err = json.Unmarshal(read, &er)
 		if err != nil {
 			return profile, errors.Wrap(err, "unmarshal error")

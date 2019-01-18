@@ -2,7 +2,7 @@ package messenger
 
 import "fmt"
 
-type rawError struct {
+type RawError struct {
 	Error Error `json:"error"`
 }
 
