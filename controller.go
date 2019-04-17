@@ -22,6 +22,7 @@ type Controller interface {
 	GetProfile(userID string, accessToken string, url string, fields ...Field) (Profile, error)
 	UpdatePageSettings(accessToken string, payload json.RawMessage) error
 	DeletePageSettings(accessToken string, payload json.RawMessage) error
+	SendPrivateReply(objectID, accessToken, messageContent string) (*PrivateReplyResponse, error)
 }
 
 // controller is the struct holding all functionalities belongs to these structs
@@ -211,4 +212,34 @@ func (c *controller) doThreadRequest(method string, url string, body io.Reader) 
 		return errors.Wrapf(err, "doThreadRequest response != 200: %s", string(respBody))
 	}
 	return nil
+}
+
+func (c *controller) SendPrivateReply(objectID, accessToken, messageContent string) (*PrivateReplyResponse, error) {
+	var response PrivateReplyResponse
+	url := fmt.Sprintf("%s/%s/%s?access_token=%s", GraphAPI, c.graphAPIVersion, PrivateReplyPath, accessToken)
+
+	message := PrivateReply{Message: messageContent}
+	b, err := json.Marshal(message)
+	if err != nil {
+		return &response, errors.Wrapf(err, "SendPrivateReplies/json.Marshal(%v)", message)
+	}
+
+	reader := bytes.NewReader(b)
+	resp, err := c.doRequest(http.MethodPost, url, reader)
+	if err != nil {
+		return &response, errors.Wrapf(err, "SendPrivateReplies/c.doRequest(%v, %v, %v)", http.MethodPost, url, reader)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return &response, errors.Wrapf(err, "SendPrivateReplies/ioutil.ReadAll(%v)", resp.Body)
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return &response, errors.Wrapf(err, "SendPrivateReplies/json.Unmarshal(%v, %v)", body, response)
+	}
+
+	return &response, nil
 }
