@@ -216,7 +216,7 @@ func (c *controller) doThreadRequest(method string, url string, body io.Reader) 
 
 func (c *controller) SendPrivateReply(objectID, accessToken, messageContent string) (*PrivateReplyResponse, error) {
 	var response PrivateReplyResponse
-	url := fmt.Sprintf("%s/%s/%s?access_token=%s", GraphAPI, c.graphAPIVersion, PrivateReplyPath, accessToken)
+	url := fmt.Sprintf("%s/%s/%s/%s?access_token=%s", GraphAPI, c.graphAPIVersion, objectID, PrivateReplyPath, accessToken)
 
 	message := PrivateReply{Message: messageContent}
 	b, err := json.Marshal(message)
