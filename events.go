@@ -89,12 +89,32 @@ type AppRolesCallback map[string][]AppRole
 // https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-echo
 type ReceivedMessage struct {
 	ID          string             `json:"mid"`
+	Tags        *Tag               `json:"tags,omitempty"`
 	Text        string             `json:"text,omitempty"`
-	Attachments []*Attachment      `json:"attachments,omitempty"`
+	Attachments []Attachment       `json:"attachments,omitempty"`
 	Seq         int                `json:"seq"`
 	QuickReply  *QuickReplyPayload `json:"quick_reply,omitempty"`
 	IsEcho      bool               `json:"is_echo,omitempty"`
 	Metadata    *string            `json:"metadata,omitempty"`
+}
+
+type MessagingReferralSource string
+
+// https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_referrals#properties
+const (
+	// Referral Source
+	MessagingReferralSourceMessengerCode      MessagingReferralSource = "MESSENGER_CODE"
+	MessagingReferralSourceDiscoverTab        MessagingReferralSource = "DISCOVER_TAB"
+	MessagingReferralSourceAds                MessagingReferralSource = "ADS"
+	MessagingReferralSourceShortLink          MessagingReferralSource = "SHORTLINK"
+	MessagingReferralSourceCustomerChatPlugin MessagingReferralSource = "CUSTOMER_CHAT_PLUGIN"
+
+	// Messaging tags source
+	MessagingTagsSourceCustomerChatPlugin MessagingReferralSource = "customer_chat_plugin"
+)
+
+type Tag struct {
+	Source MessagingReferralSource `json:"source"`
 }
 
 // QuickReplyPayload contains content specific to a quick reply.
