@@ -23,6 +23,11 @@ type Controller interface {
 	UpdatePageSettings(accessToken string, payload json.RawMessage) error
 	DeletePageSettings(accessToken string, payload json.RawMessage) error
 	SendPrivateReply(objectID, accessToken, messageContent string) (*PrivateReplyResponse, error)
+
+	CreatePersona(accessToken string, payload json.RawMessage) (*PersonaResponse, error)
+	GetPersona(accessToken, personaID string) (*Persona, error)
+	Personas(accessToken string) ([]Persona, error)
+	DeletePersona(accessToken, personaID string) error
 }
 
 // controller is the struct holding all functionalities belongs to these structs
@@ -74,7 +79,7 @@ func (c *controller) PassThread(ctx context.Context, targetAppID int64, recipien
 	if err != nil {
 		return errors.Wrapf(err, "PassThread - json.Marshal(%v), URL: %s", data, url)
 	}
-	err = c.doThreadRequest("POST", url, bytes.NewReader(enc))
+	err = c.doThreadRequest(http.MethodPost, url, bytes.NewReader(enc))
 	if err != nil {
 		return errors.Wrapf(err, "PassThread - sent: %s", string(enc))
 	}
@@ -102,7 +107,7 @@ func (c *controller) TakeThread(ctx context.Context, recipient, metadata, access
 		return errors.Wrapf(err, "TakeThread - json.Marshal(%v)", data)
 	}
 
-	err = c.doThreadRequest("POST", url, bytes.NewReader(enc))
+	err = c.doThreadRequest(http.MethodPost, url, bytes.NewReader(enc))
 	if err != nil {
 		return errors.Wrap(err, "TakeThread")
 	}
@@ -125,7 +130,7 @@ func (c *controller) GetProfile(userID string, accessToken string, url string, f
 	} else {
 		url = fmt.Sprintf(url+"/%s?%s&access_token=%s", userID, parameters, accessToken)
 	}
-	resp, err := c.doRequest("GET", url, nil)
+	resp, err := c.doRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return profile, err
 	}
@@ -242,4 +247,131 @@ func (c *controller) SendPrivateReply(objectID, accessToken, messageContent stri
 	}
 
 	return &response, nil
+}
+
+// CreatePersona creates persona on facebook and retrieves the id of persona.
+func (c *controller) CreatePersona(accessToken string, payload json.RawMessage) (*PersonaResponse, error) {
+	var response PersonaResponse
+	uri := fmt.Sprintf("%s/%s/me/%s?access_token=%s", GraphAPI, c.graphAPIVersion, PersonasPath, accessToken)
+
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return nil, errors.Wrapf(err, "CreatePersona/json.Marshal(%v)", payload)
+	}
+
+	reader := bytes.NewReader(b)
+	req, err := http.NewRequest(http.MethodPost, uri, reader)
+	if err != nil {
+		return nil, errors.Wrapf(err, "CreatePersona/http.NewRequest(%v, %v, %v)", http.MethodPost, uri, b)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, errors.Wrapf(err, "CreatePersona/c.httpClient.Do(%v)", req)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return &response, errors.Wrapf(err, "CreatePersona/ioutil.ReadAll(%v)", resp.Body)
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return &response, errors.Wrapf(err, "CreatePersona/json.Unmarshal(%v, %v)", body, response)
+	}
+
+	return &response, nil
+}
+
+// GetPersona retrieves the persona by the given id.
+func (c *controller) GetPersona(accessToken, personaID string) (*Persona, error) {
+	var response Persona
+	uri := fmt.Sprintf("%s/%s/%s?access_token=%s", GraphAPI, c.graphAPIVersion, personaID, accessToken)
+
+	req, err := http.NewRequest(http.MethodGet, uri, nil)
+	if err != nil {
+		return nil, errors.Wrapf(err, "GetPersona/http.NewRequest(%v, %v)", http.MethodGet, uri)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, errors.Wrapf(err, "GetPersona/c.httpClient.Do(%v)", req)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return &response, errors.Wrapf(err, "GetPersona/ioutil.ReadAll(%v)", resp.Body)
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return &response, errors.Wrapf(err, "GetPersona/json.Unmarshal(%v, %v)", body, response)
+	}
+
+	return &response, nil
+}
+
+// Personas retrieves the personas for the given access token of page.
+func (c *controller) Personas(accessToken string) ([]Persona, error) {
+	var response ListOfPersonaResponse
+	uri := fmt.Sprintf("%s/%s/me/%s?access_token=%s", GraphAPI, c.graphAPIVersion, PersonasPath, accessToken)
+
+	req, err := http.NewRequest(http.MethodGet, uri, nil)
+	if err != nil {
+		return response.Data, errors.Wrapf(err, "Personas/http.NewRequest(%v, %v)", http.MethodGet, uri)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return response.Data, errors.Wrapf(err, "Personas/c.httpClient.Do(%v)", req)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return response.Data, errors.Wrapf(err, "Personas/ioutil.ReadAll(%v)", resp.Body)
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return response.Data, errors.Wrapf(err, "Personas/json.Unmarshal(%v, %v)", body, response)
+	}
+
+	return response.Data, nil
+}
+
+// DeletePersona removes the persona by the given id.
+func (c *controller) DeletePersona(accessToken, personaID string) error {
+	var response DeletePersonaResponse
+	uri := fmt.Sprintf("%s/%s/%s?access_token=%s", GraphAPI, c.graphAPIVersion, personaID, accessToken)
+
+	req, err := http.NewRequest(http.MethodDelete, uri, nil)
+	if err != nil {
+		return errors.Wrapf(err, "DeletePersona/http.NewRequest(%v, %v)", http.MethodDelete, uri)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return errors.Wrapf(err, "DeletePersona/c.httpClient.Do(%v)", req)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return errors.Wrapf(err, "DeletePersona/ioutil.ReadAll(%v)", resp.Body)
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return errors.Wrapf(err, "DeletePersona/json.Unmarshal(%v, %v)", body, response)
+	}
+
+	if !response.Success {
+		return fmt.Errorf("DeletePersona/NotSuccessDelete(%v)", personaID)
+	}
+
+	return nil
 }
