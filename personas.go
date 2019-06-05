@@ -8,7 +8,6 @@ const (
 type Persona struct {
 	Name              string `json:"name"`
 	ProfilePictureURL string `json:"profile_picture_url"`
-	ID                string `json:"id"`
 }
 
 // PersonaResponse represents the response for create.
