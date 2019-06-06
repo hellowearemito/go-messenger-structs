@@ -60,4 +60,5 @@ type MessageQuery struct {
 	NotificationType NotificationType `json:"notification_type,omitempty" form:"notification_type,omitempty"`
 	Action           SenderAction     `json:"sender_action,omitempty" form:"sender_action,omitempty"`
 	MessagingType    MessagingType    `json:"messaging_type,omitempty" form:"messaging_type,omitempty"`
+	PersonaID        string           `json:"persona_id,omitempty" form:"persona_id,omitempty"`
 }
